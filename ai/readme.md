@@ -28,3 +28,10 @@ SentenceTransformer 모델을 사용해 입력 문장과 각 실습실의 설명
 예: "추천 실습실: 306호, 유사도 점수: 0.92"
 
 ]
+
+가상환경 생성 > pip install -r requirements.txt
+
+```sh
+python3 -m venv venv
+venv\Scripts\activate
+```
