@@ -13,7 +13,7 @@ def init_db():
             grade TEXT,
             class TEXT,
             number TEXT,
-            name TEXT,=
+            name TEXT,
             purpose TEXT,
             date TEXT,
             start_time TEXT,
@@ -23,62 +23,6 @@ def init_db():
     conn.commit()
     conn.close()
 
-data = {
-    "302": {
-        "cpu": "Intel(R) Core(TM) i7-9700",
-        "gpu": "NVIDIA GeForce RTX 2060",
-        "memory": "16GB",
-        "disk": "SSD 970 PRO 512GB",
-        "program": "Adobe Creative Cloud, AutoCAD, Eclipse, IntelliJ, Node.js, Oracle Database, PyCharm, QGIS, Visual Studio, Visual Studio Code",
-        "language": "Java, Python, R",
-        "Notes": "멀티탭 2자리 1개",
-        "count": "27",
-        "image_url": "/static/images/302.jpg"
-    },
-    "306": {
-        "cpu": "Intel(R) Core(TM) i9-13700",
-        "gpu": "NVIDIA GeForce RTX 4060",
-        "memory": "32GB",
-        "disk": "SAMSUNG MZVL2512HCJQ-00B00",
-        "program": "Adobe Creative Cloud, Visual Studio, Unity, Unreal Engine",
-        "language": "-",
-        "Notes": "성능은 좋지만 깔린게 없음",
-        "count": "24",
-        "image_url": "/static/images/306.jpg"
-    },
-    "307": {
-        "cpu": "Intel(R) Core(TM) i7-9700",
-        "gpu": "NVIDIA GeForce RTX 2060",
-        "memory": "16GB",
-        "disk": "SSD 970 PRO 512GB",
-        "program": "Adobe Creative Cloud, Visual Studio Code",
-        "language": "Java",
-        "Notes": "인터넷 느림, 멀티탭 2자리 1개",
-        "count": "25",
-        "image_url": "/static/images/307.jpg"
-    },
-    "308": {
-        "cpu": "Intel(R) Core(TM) i7-9700",
-        "gpu": "NVIDIA GeForce RTX 3060",
-        "memory": "32GB",
-        "disk": "SSD 970 PRO 512GB",
-        "program": "Adobe Creative Cloud, AutoCAD, CUDA, Eclipse, IntelliJ, Node.js, Oracle Database, PyCharm, QGIS, Visual Studio, Visual Studio Code",
-        "language": "Java, Python, R",
-        "Notes": "없음",
-        "count": "26",
-        "image_url": "/static/images/308.jpg"
-    }
-}
-
-@app.route("/computer/<id>")
-def get_computer(id):
-    computer_info = data.get(id)
-    if computer_info:
-        return jsonify(computer_info)
-    else:
-        return jsonify({"error": "Data not found"}), 404
-      
-
 @app.route('/reservations', methods=['GET'])
 def get_reservations():
     conn = sqlite3.connect('database.db')
@@ -87,7 +31,6 @@ def get_reservations():
     rows = cursor.fetchall()
     conn.close()
 
-    # 데이터를 JSON 형식으로 변환
     reservations = [
         {
             "id": row[0],
@@ -105,6 +48,6 @@ def get_reservations():
 
     return jsonify(reservations)
 
-
-if __name__ == "__main__":
+if __name__ == '__main__':
+    init_db()
     app.run(debug=True)
