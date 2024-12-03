@@ -124,23 +124,56 @@ def get_computer(id):
 
 @app.route('/recommend', methods=['POST'])
 def recommend_lab():
-    user_request = request.json['description']
-    user_embedding = model.encode(user_request, convert_to_tensor=True)
+    try:
+        user_request = request.json.get('description', '')
+        print("사용자 입력:", user_request)  # 사용자 입력 확인
 
-    conn = sqlite3.connect('database.db')
-    cursor = conn.cursor()
-    cursor.execute('SELECT id, program FROM labs')
-    rows = cursor.fetchall()
-    conn.close()
+        # 사용자 입력 임베딩 생성
+        user_embedding = model.encode(user_request, convert_to_tensor=True)
 
-    scores = []
-    for lab_id, program in rows:
-        lab_embedding = model.encode(program, convert_to_tensor=True)
-        similarity = util.pytorch_cos_sim(user_embedding, lab_embedding).item()
-        scores.append({"id": lab_id, "score": similarity})
+        # 데이터베이스에서 데이터 불러오기
+        conn = sqlite3.connect('database.db')
+        cursor = conn.cursor()
+        cursor.execute('SELECT id, program, cpu, gpu, memory FROM labs')
+        rows = cursor.fetchall()
+        conn.close()
 
-    best_match = max(scores, key=lambda x: x['score'])
-    return jsonify(best_match)
+        scores = []
+        reasons = []
+
+        for lab_id, program, cpu, gpu, memory in rows:
+            # 프로그램 유사도 계산
+            lab_embedding = model.encode(program, convert_to_tensor=True)
+            similarity = util.pytorch_cos_sim(user_embedding, lab_embedding).item()
+            scores.append({"id": lab_id, "score": similarity})
+
+            # 추천 이유 생성
+            reason = []
+            if "Adobe" in user_request and "Adobe" in program:
+                reason.append("Adobe Creative Cloud를 사용할 수 있음")
+            if "GPU" in user_request and "RTX" in gpu:
+                reason.append(f"성능 좋은 GPU({gpu})를 갖춤")
+            if "메모리" in user_request and int(memory.replace("GB", "")) >= 32:
+                reason.append("충분한 메모리 용량 제공")
+
+            reasons.append({"id": lab_id, "reason": ", ".join(reason)})
+
+        print("계산된 점수:", scores)  # 계산된 점수 출력
+        print("추천 이유:", reasons)  # 추천 이유 출력
+
+        # 최적의 매칭 선택
+        best_match = max(scores, key=lambda x: x['score'])
+
+        # 추천 이유 추가
+        match_reason = next((item["reason"] for item in reasons if item["id"] == best_match["id"]), "적합한 이유를 찾을 수 없음")
+        best_match["reason"] = match_reason
+
+        return jsonify(best_match)
+
+    except Exception as e:
+        print("오류 발생:", str(e))
+        return jsonify({"error": "서버 오류 발생"}), 500
+
 
 if __name__ == '__main__':
     init_lab_data()
