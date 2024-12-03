@@ -12,14 +12,24 @@
     <script>
         async function getRecommendation() {
             const userInput = document.getElementById('userInput').value;
-            const response = await fetch('/recommend', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({description: userInput})
-            });
-            const data = await response.json();
-            document.getElementById('result').innerText = `추천 실습실: ${data.name}, 유사도 점수: ${data.score}`;
+            try {
+                const response = await fetch('/recommend', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({description: userInput})
+                });
+                const data = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('result').innerText = `추천 실습실: ${data.id}, 유사도 점수: ${data.score.toFixed(2)}`;
+                } else {
+                    document.getElementById('result').innerText = `오류: ${data.error}`;
+                }
+            } catch (error) {
+                document.getElementById('result').innerText = `네트워크 오류: ${error.message}`;
+            }
         }
+        
     </script>
 </body>
 </html>
