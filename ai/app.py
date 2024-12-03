@@ -45,7 +45,7 @@ lab_data = {
         "gpu": "NVIDIA GeForce RTX 3060",
         "memory": "32GB",
         "disk": "SSD 970 PRO 512GB",
-        "program": "Adobe Creative Cloud, AutoCAD, CUDA, Eclipse, IntelliJ, Node.js, Oracle Database, PyCharm, QGIS, Visual Studio, Visual Studio Code",
+        "program": "Adobe Creative Cloud, AutoCAD, Android Studio, CUDA, Eclipse, IntelliJ, Node.js, Oracle Database, PyCharm, QGIS, Visual Studio, Visual Studio Code",
         "language": "Java, Python, R",
         "Notes": "없음",
         "count": "26",
