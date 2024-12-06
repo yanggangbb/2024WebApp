@@ -16,6 +16,7 @@ pip install -r requirements.txt
 npm i
 ```
 
+실행
 - ai
 ```sh
 uvicorn main:app --reload
