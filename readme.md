@@ -7,10 +7,11 @@ venv\Scripts\activate
 ```
 
 가상환경 세팅
+- 2024Webapp
 ```sh
 pip install -r requirements.txt
 ```
-client
+- client
 ```sh
 npm i
 ```
